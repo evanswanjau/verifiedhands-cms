@@ -17,12 +17,11 @@ type CompanyContent = {
 
 const companyUrl = `${import.meta.env.VITE_API_BASE_URL}/content/company`;
 
-// Dummy auth for demo
-const useAuth = () => ({
-  user: { id: 1, name: "Test User" },
-  token:
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUwODI5NjI4LCJleHAiOjE3NTM0MjE2Mjh9.JaJzSWpO4I25UmZxIZ80frsENN5lUCDbXQiXVe03Jio",
-});
+const useAuth = () => {
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const token = localStorage.getItem("token");
+  return { user, token };
+};
 
 // Helper for update logic
 async function updateSection(

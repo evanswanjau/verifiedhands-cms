@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Home,
   Info,
@@ -12,6 +12,7 @@ import {
   Building2,
   Users,
   Twitter,
+  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -41,6 +42,7 @@ const menu = [
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [company, setCompany] = useState<Company>({
     name: "",
     displayName: "",
@@ -63,6 +65,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         console.error("Failed to fetch company info");
       });
   }, []);
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login", { replace: true });
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -116,15 +125,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {/* Topbar */}
         <header className="h-16 bg-gray-900 border-b border-gray-800 flex items-center px-8 justify-between shadow">
           <div className="text-lg font-semibold text-white tracking-wide">
-            CMS Panel
+            CMS PANEL
           </div>
-          <div>
+          <div className="flex gap-2 items-center">
             <Button
               variant="outline"
               className="rounded-full border-gray-700 bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white"
             >
               <Users className="w-5 h-5 mr-2" />
               Account
+            </Button>
+            <Button
+              variant="outline"
+              className="cursor-pointer rounded-full border-gray-700 bg-gray-800 text-gray-200 hover:bg-red-700 hover:text-white"
+              onClick={handleLogout}
+              title="Logout"
+            >
+              <LogOut className="w-5 h-5 mr-2" />
+              Logout
             </Button>
           </div>
         </header>
