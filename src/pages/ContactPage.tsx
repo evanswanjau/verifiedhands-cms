@@ -19,7 +19,7 @@ type ContactContent = {
   mapSrc: string;
 };
 
-const contactUrl = "http://localhost:5000/api/content/contact";
+const contactUrl = `${import.meta.env.VITE_API_BASE_URL}/content/contact`;
 
 // Dummy auth for demo
 const useAuth = () => ({

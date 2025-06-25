@@ -15,7 +15,7 @@ type CompanyContent = {
   logoUrl: string;
 };
 
-const companyUrl = "http://localhost:5000/api/content/company";
+const companyUrl = `${import.meta.env.VITE_API_BASE_URL}/content/company`;
 
 // Dummy auth for demo
 const useAuth = () => ({

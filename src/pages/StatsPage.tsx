@@ -26,7 +26,7 @@ type Stat = {
   updated_at: string;
 };
 
-const API_URL = "http://localhost:5000/api/stats";
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/stats`;
 
 // Dummy auth for demo
 const useAuth = () => ({

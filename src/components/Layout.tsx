@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 
-const COMPANY_API_URL = "http://localhost:5000/api/content/company";
+const COMPANY_API_URL = `${import.meta.env.VITE_API_BASE_URL}/content/company`;
 
 type Company = {
   name: string;

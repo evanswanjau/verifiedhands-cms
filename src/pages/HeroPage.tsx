@@ -16,7 +16,7 @@ type HeroContent = {
   imageUrl: string;
 };
 
-const API_URL = "http://localhost:5000/api/content/hero";
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/content/hero`;
 
 // Dummy auth for demo
 const useAuth = () => ({

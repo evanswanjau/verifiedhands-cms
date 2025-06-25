@@ -13,7 +13,7 @@ type CtaContent = {
   description: string;
 };
 
-const ctaUrl = "http://localhost:5000/api/content/cta";
+const ctaUrl = `${import.meta.env.VITE_API_BASE_URL}/content/cta`;
 
 // Dummy auth for demo
 const useAuth = () => ({

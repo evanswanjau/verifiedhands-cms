@@ -15,7 +15,7 @@ type SocialContent = {
   tiktok: string;
 };
 
-const socialUrl = "http://localhost:5000/api/content/social";
+const socialUrl = `${import.meta.env.VITE_API_BASE_URL}/content/social`;
 
 // Dummy auth for demo
 const useAuth = () => ({

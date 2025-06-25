@@ -32,8 +32,8 @@ type FeaturesSectionContent = {
   description: string;
 };
 
-const API_URL = "http://localhost:5000/api/features";
-const SECTION_API_URL = "http://localhost:5000/api/content/features";
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/features`;
+const SECTION_API_URL = "${import.meta.env.VITE_API_BASE_URL}/content/features";
 
 // Dummy auth for demo
 const useAuth = () => ({
