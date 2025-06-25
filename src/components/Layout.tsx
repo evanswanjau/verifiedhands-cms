@@ -116,7 +116,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {/* Topbar */}
         <header className="h-16 bg-gray-900 border-b border-gray-800 flex items-center px-8 justify-between shadow">
           <div className="text-lg font-semibold text-white tracking-wide">
-            Admin Panel
+            CMS Panel
           </div>
           <div>
             <Button
