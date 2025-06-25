@@ -128,13 +128,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             CMS PANEL
           </div>
           <div className="flex gap-2 items-center">
-            <Button
-              variant="outline"
-              className="rounded-full border-gray-700 bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white"
-            >
-              <Users className="w-5 h-5 mr-2" />
-              Account
-            </Button>
+            <a href="/account">
+              <Button
+                variant="outline"
+                className="rounded-full cursor-pointer border-gray-700 bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white"
+              >
+                <Users className="w-5 h-5 mr-2" />
+                Account
+              </Button>
+            </a>
             <Button
               variant="outline"
               className="cursor-pointer rounded-full border-gray-700 bg-gray-800 text-gray-200 hover:bg-red-700 hover:text-white"

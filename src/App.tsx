@@ -10,6 +10,7 @@ import ContactPages from "@/pages/ContactPage";
 import CtaPages from "@/pages/CtaPage";
 import SocialPage from "@/pages/SocialPage";
 import LoginPage from "@/pages/LoginPage";
+import AccountPage from "@/pages/AccountPage";
 import RequireAuth from "@/components/RequireAuth";
 
 const App = () => {
@@ -96,6 +97,14 @@ const App = () => {
             element={
               <RequireAuth>
                 <CompanyContentPage />
+              </RequireAuth>
+            }
+          />{" "}
+          <Route
+            path="/account"
+            element={
+              <RequireAuth>
+                <AccountPage />
               </RequireAuth>
             }
           />
