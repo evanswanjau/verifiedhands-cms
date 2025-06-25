@@ -11,7 +11,7 @@ import {
   Megaphone,
   Building2,
   Users,
-  Twitter
+  Twitter,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -19,6 +19,7 @@ import axios from "axios";
 const COMPANY_API_URL = "http://localhost:5000/api/content/company";
 
 type Company = {
+  name: string;
   displayName: string;
   logoUrl: string;
   tagline: string;
@@ -41,6 +42,7 @@ const menu = [
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const [company, setCompany] = useState<Company>({
+    name: "",
     displayName: "",
     logoUrl: "",
     tagline: "",
@@ -51,6 +53,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       .get(COMPANY_API_URL)
       .then((res) => {
         setCompany({
+          name: res.data.name,
           displayName: res.data.displayName,
           logoUrl: res.data.logoUrl,
           tagline: res.data.tagline,
@@ -103,7 +106,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </nav>
         <div className="px-6 pb-6 mt-auto">
           <div className="text-xs text-gray-500">
-            &copy; {new Date().getFullYear()} {company.displayName}
+            &copy; {new Date().getFullYear()} {company.name}
           </div>
         </div>
       </aside>
