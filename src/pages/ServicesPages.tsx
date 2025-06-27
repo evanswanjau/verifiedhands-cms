@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import Layout from "@/components/Layout";
+import ImageUploader from "@/components/ImageUploader";
 
 type Service = {
   id: number;
@@ -47,7 +48,7 @@ const serviceColumns: Column<Service>[] = [
     render: (row) => (
       <div className="flex items-center">
         <img
-          src={row.imageUrl}
+          src={import.meta.env.VITE_BASE_URL + row.imageUrl}
           alt={row.title}
           className="h-10 w-16 object-cover rounded-md border border-gray-200"
         />
@@ -102,6 +103,8 @@ const serviceColumns: Column<Service>[] = [
 
 export default function ServicesPages() {
   const [loading, setLoading] = useState(true);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [services, setServices] = useState<Service[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Service | null>(null);
@@ -179,17 +182,28 @@ export default function ServicesPages() {
       return;
     }
     setLoading(true);
+    setUploading(true);
     try {
+      const data = new FormData();
+
+      /* append text fields except avatar */
+      Object.entries(form).forEach(([k, v]) => {
+        if (k !== "avatar") data.append(k, v);
+      });
+
+      if (imageFile) data.append("image", imageFile);
+
       if (editing) {
-        await axios.put(`${API_URL}/${editing.id}`, form, authConfig);
+        await axios.put(`${API_URL}/${editing.id}`, data, authConfig);
         toast.success("Service updated successfully!");
       } else {
-        await axios.post(API_URL, form, authConfig);
+        await axios.post(API_URL, data, authConfig);
         toast.success("Service created successfully!");
       }
       fetchServices();
       setModalOpen(false);
       setEditing(null);
+      setImageFile(null);
       setForm({ title: "", description: "", imageUrl: "" });
     } catch {
       toast.error("Failed to save service.");
@@ -430,13 +444,10 @@ export default function ServicesPages() {
                 <label className="block mb-1 font-medium text-gray-700">
                   Image URL
                 </label>
-                <Input
-                  name="imageUrl"
+                <ImageUploader
                   value={form.imageUrl}
-                  onChange={handleChange}
-                  required
-                  className="bg-white"
-                  placeholder="Paste image URL"
+                  onSelect={(file) => setImageFile(file)}
+                  uploading={uploading}
                 />
               </div>
               <DialogFooter className="flex justify-end gap-2 mt-4">

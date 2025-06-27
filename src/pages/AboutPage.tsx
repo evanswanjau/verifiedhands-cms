@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import Layout from "@/components/Layout";
+import ImageUploader from "@/components/ImageUploader";
 
 type AboutContent = {
   badgeText: string;
@@ -32,6 +33,8 @@ const useAuth = () => {
 
 export default function AboutContentPage() {
   const [loading, setLoading] = useState(true);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState<AboutContent>({
     badgeText: "",
     title: "",
@@ -72,18 +75,30 @@ export default function AboutContentPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) {
-      toast.error("You must be logged in to perform this action.");
-      return;
-    }
+    if (!user) return toast.error("You must be logged in.");
+
     setLoading(true);
+    setUploading(true);
+
     try {
-      await axios.put(API_URL, form, authConfig);
+      const data = new FormData();
+
+      /* append text fields except imageUrl */
+      Object.entries(form).forEach(([k, v]) => {
+        if (k !== "imageUrl") data.append(k, v);
+      });
+
+      if (imageFile) data.append("image", imageFile);
+
+      await axios.put(API_URL, data, authConfig);
+
       toast.success("About content updated!");
+      setImageFile(null);
     } catch {
       toast.error("Failed to update about content.");
     } finally {
       setLoading(false);
+      setUploading(false); // hide Loader2
     }
   };
 
@@ -128,18 +143,6 @@ export default function AboutContentPage() {
             <Textarea
               name="description"
               value={form.description}
-              onChange={handleChange}
-              required
-              className="bg-white"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-medium text-gray-700">
-              Image URL
-            </label>
-            <Input
-              name="imageUrl"
-              value={form.imageUrl}
               onChange={handleChange}
               required
               className="bg-white"
@@ -243,6 +246,15 @@ export default function AboutContentPage() {
               className="bg-white"
             />
           </div>
+          <label className="block mb-1 font-medium text-gray-700">
+            Image URL
+          </label>
+          <ImageUploader
+            value={form.imageUrl}
+            onSelect={(file) => setImageFile(file)}
+            uploading={uploading}
+          />
+
           <div className="flex justify-end gap-2 mt-4">
             <Button
               type="submit"

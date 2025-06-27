@@ -6,13 +6,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import Layout from "@/components/Layout";
+import ImageUploader from "@/components/ImageUploader";
 
 type CompanyContent = {
   name: string;
   displayName: string;
   tagline: string;
   bio: string;
-  logoUrl: string;
+  imageUrl: string;
 };
 
 const companyUrl = `${import.meta.env.VITE_API_BASE_URL}/content/company`;
@@ -36,6 +37,8 @@ export default function CompanyPage() {
   // Company
   const [company, setCompany] = useState<CompanyContent | null>(null);
   const [companyLoading, setCompanyLoading] = useState(true);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const { user, token } = useAuth();
   const authConfig: AxiosRequestConfig = {
@@ -71,9 +74,21 @@ export default function CompanyPage() {
       return;
     }
     setCompanyLoading(true);
+    setUploading(true);
+
     try {
-      await updateSection(companyUrl, company, authConfig);
+      const data = new FormData();
+
+      /* append text fields except imageUrl */
+      Object.entries(company).forEach(([k, v]) => {
+        if (k !== "imageUrl") data.append(k, v);
+      });
+
+      if (imageFile) data.append("image", imageFile);
+
+      await updateSection(companyUrl, data, authConfig);
       toast.success("Company Info updated!");
+      setImageFile(null);
     } catch {
       toast.error("Failed to update Company Info.");
     } finally {
@@ -147,12 +162,10 @@ export default function CompanyPage() {
                 <label className="block mb-1 font-medium text-gray-700">
                   Logo URL
                 </label>
-                <Input
-                  name="logoUrl"
-                  value={company.logoUrl}
-                  onChange={handleChange}
-                  required
-                  className="bg-white"
+                <ImageUploader
+                  value={company.imageUrl}
+                  onSelect={(file) => setImageFile(file)}
+                  uploading={uploading}
                 />
               </div>
               <div className="flex justify-end gap-2 mt-4">

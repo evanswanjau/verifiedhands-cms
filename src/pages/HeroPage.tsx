@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import Layout from "@/components/Layout";
+import ImageUploader from "@/components/ImageUploader";
 
 type HeroContent = {
   tagline: string;
@@ -26,6 +27,8 @@ const useAuth = () => {
 
 export default function HeroContentPage() {
   const [loading, setLoading] = useState(true);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState<HeroContent>({
     tagline: "",
     headline: "",
@@ -65,9 +68,22 @@ export default function HeroContentPage() {
       return;
     }
     setLoading(true);
+    setUploading(true);
+
     try {
-      await axios.put(API_URL, form, authConfig);
+      const data = new FormData();
+
+      /* append text fields except imageUrl */
+      Object.entries(form).forEach(([k, v]) => {
+        if (k !== "imageUrl") data.append(k, v);
+      });
+
+      if (imageFile) data.append("image", imageFile);
+
+      await axios.put(API_URL, data, authConfig);
+
       toast.success("Hero content updated!");
+      setImageFile(null);
     } catch {
       toast.error("Failed to update hero content.");
     } finally {
@@ -149,12 +165,10 @@ export default function HeroContentPage() {
             <label className="block mb-1 font-medium text-gray-700">
               Image URL
             </label>
-            <Input
-              name="imageUrl"
+            <ImageUploader
               value={form.imageUrl}
-              onChange={handleChange}
-              required
-              className="bg-white"
+              onSelect={(file) => setImageFile(file)}
+              uploading={uploading}
             />
           </div>
           <div className="flex justify-end gap-2 mt-4">

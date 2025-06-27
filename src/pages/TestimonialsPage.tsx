@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import Layout from "@/components/Layout";
+import ImageUploader from "@/components/ImageUploader";
 
 type Testimonial = {
   id: number;
@@ -53,7 +54,7 @@ const testimonialColumns: Column<Testimonial>[] = [
     render: (row) =>
       row.avatar ? (
         <img
-          src={row.avatar}
+          src={import.meta.env.VITE_BASE_URL + row.avatar}
           alt={row.name}
           className="h-10 w-10 rounded-full object-cover border border-gray-200"
         />
@@ -135,6 +136,8 @@ const testimonialColumns: Column<Testimonial>[] = [
 
 export default function TestimonialsPage() {
   const [loading, setLoading] = useState(true);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Testimonial | null>(null);
@@ -219,17 +222,30 @@ export default function TestimonialsPage() {
       return;
     }
     setLoading(true);
+    setUploading(true);
+
     try {
+      const data = new FormData();
+
+      /* append text fields except avatar */
+      Object.entries(form).forEach(([k, v]) => {
+        // @ts-expect-error – OK for one-off suppression
+        if (k !== "avatar") data.append(k, v);
+      });
+
+      if (imageFile) data.append("image", imageFile);
+
       if (editing) {
-        await axios.put(`${API_URL}/${editing.id}`, form, authConfig);
+        await axios.put(`${API_URL}/${editing.id}`, data, authConfig);
         toast.success("Testimonial updated successfully!");
       } else {
-        await axios.post(API_URL, form, authConfig);
+        await axios.post(API_URL, data, authConfig);
         toast.success("Testimonial created successfully!");
       }
       fetchTestimonials();
       setModalOpen(false);
       setEditing(null);
+      setImageFile(null);
       setForm({
         name: "",
         location: "",
@@ -488,18 +504,6 @@ export default function TestimonialsPage() {
               </div>
               <div>
                 <label className="block mb-1 font-medium text-gray-700">
-                  Avatar URL
-                </label>
-                <Input
-                  name="avatar"
-                  value={form.avatar}
-                  onChange={handleChange}
-                  className="bg-white"
-                  placeholder="https://example.com/avatar.jpg"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium text-gray-700">
                   Service
                 </label>
                 <Input
@@ -553,6 +557,16 @@ export default function TestimonialsPage() {
                   <option value={0}>No</option>
                   <option value={1}>Yes</option>
                 </select>
+              </div>
+              <div>
+                <label className="block mb-1 font-medium text-gray-700">
+                  Avatar URL
+                </label>
+                <ImageUploader
+                  value={form.avatar}
+                  onSelect={(file) => setImageFile(file)}
+                  uploading={uploading}
+                />
               </div>
               <DialogFooter className="flex justify-end gap-2 mt-4">
                 <Button
