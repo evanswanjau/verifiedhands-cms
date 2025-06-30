@@ -27,7 +27,7 @@ const useAuth = () => {
 // Helper for update logic
 async function updateSection(
   url: string,
-  form: CompanyContent,
+  form: CompanyContent | FormData,
   authConfig: AxiosRequestConfig
 ) {
   await axios.put(url, form, authConfig);
