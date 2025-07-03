@@ -22,7 +22,7 @@ const COMPANY_API_URL = `${import.meta.env.VITE_API_BASE_URL}/content/company`;
 type Company = {
   name: string;
   displayName: string;
-  logoUrl: string;
+  imageUrl: string;
   tagline: string;
 };
 
@@ -46,7 +46,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [company, setCompany] = useState<Company>({
     name: "",
     displayName: "",
-    logoUrl: "",
+    imageUrl: "",
     tagline: "",
   });
 
@@ -57,7 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         setCompany({
           name: res.data.name,
           displayName: res.data.displayName,
-          logoUrl: res.data.logoUrl,
+          imageUrl: res.data.imageUrl,
           tagline: res.data.tagline,
         });
       })
@@ -80,9 +80,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="h-20 flex items-center justify-center border-b border-gray-800">
           <div className="flex items-center gap-3">
             <img
-              src={company.logoUrl}
+              src={import.meta.env.VITE_BASE_URL + company.imageUrl}
               alt={company.displayName}
-              className="h-10 w-10 rounded-full bg-white border border-gray-300 shadow"
+              className="h-auto w-10 rounded-full bg-white border border-gray-300 shadow"
             />
             <div>
               <span className="text-xl font-bold text-white tracking-tight block">

@@ -14,7 +14,7 @@ type Company = {
   name: string;
   displayName: string;
   tagline: string;
-  logoUrl: string;
+  imageUrl: string;
 };
 
 export default function LoginPage() {
@@ -58,7 +58,7 @@ export default function LoginPage() {
         {company && (
           <div className="flex flex-col items-center mb-6">
             <img
-              src={company.logoUrl}
+              src={import.meta.env.VITE_BASE_URL + company.imageUrl}
               alt={company.displayName}
               className="h-auto w-52 mb-2"
             />
@@ -72,8 +72,11 @@ export default function LoginPage() {
           <h1 className="text-xl font-semibold text-gray-800 mb-4 text-center">
             Sign in to your account
           </h1>
-            <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Email
             </label>
             <Input
@@ -87,9 +90,12 @@ export default function LoginPage() {
               className="bg-white"
               autoFocus
             />
-            </div>
-            <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Password
             </label>
             <Input
@@ -102,7 +108,7 @@ export default function LoginPage() {
               required
               className="bg-white"
             />
-            </div>
+          </div>
           <Button
             type="submit"
             className="bg-green-600 text-white hover:bg-green-700 w-full flex items-center justify-center gap-2 cursor-pointer"
